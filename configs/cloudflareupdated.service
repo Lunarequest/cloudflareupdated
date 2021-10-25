@@ -1,9 +1,9 @@
-[unit]
+[Unit]
 Description=A job to run cloudflareupdated
 
 [Service]
 Type=oneshot
-ExecStart=/home/<user>/cloudflareupdated/release/cloudflareupdated -c /home/<user>/cloudflareupdated/settings.yaml
+ExecStart=/home/<user>/cloudflareupdated/target/release/cloudflareupdated -c /home/<user>/cloudflareupdated/settings.yaml
 
 [Install]
 WantedBy=network-online.target
