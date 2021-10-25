@@ -37,8 +37,8 @@ pub struct VerifcationResponse {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct MetaInfo {
     auto_added: bool,
-    managed_by_apps: bool,
-    managed_by_argo_tunnel: bool,
+    managed_by_apps: Option<bool>,
+    managed_by_argo_tunnel: Option<bool>,
     source: String,
 }
 #[derive(Debug, Serialize, Deserialize, Clone)]
