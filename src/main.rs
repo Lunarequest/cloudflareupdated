@@ -1,4 +1,5 @@
 mod api;
+mod responses;
 mod structs;
 use clap::{App, Arg};
 

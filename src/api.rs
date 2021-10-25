@@ -1,6 +1,5 @@
-use super::structs::{
-    IpifyResponse, UpdateIp, UpdateIpRespone, VerifcationResponse, ZoneListResponse,
-};
+use super::responses::{IpifyResponse, UpdateIpRespone, VerifcationResponse, ZoneListResponse};
+use super::structs::UpdateIp;
 
 use reqwest::header;
 
@@ -88,7 +87,6 @@ pub async fn update_domain(
     }
 }
 
-// todo write domain ip update logic
 pub async fn update_zone(apikey: &str, zoneid: String, accepteddomain: Vec<String>) {
     let client = client_builder().await;
     let ipreq = client
