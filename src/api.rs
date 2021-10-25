@@ -1,10 +1,10 @@
 use super::structs::{
     IpifyResponse, UpdateIp, UpdateIpRespone, VerifcationResponse, ZoneListResponse,
 };
-use reqwest;
+
 use reqwest::header;
 
-const API_ENDPOINT: &'static str = "https://api.cloudflare.com/client/v4";
+const API_ENDPOINT: &str = "https://api.cloudflare.com/client/v4";
 
 async fn client_builder() -> reqwest::Client {
     let mut headers = header::HeaderMap::new();
@@ -13,10 +13,10 @@ async fn client_builder() -> reqwest::Client {
         header::HeaderValue::from_static("application/json"),
     );
 
-    return reqwest::Client::builder()
+    reqwest::Client::builder()
         .default_headers(headers)
         .build()
-        .unwrap();
+        .unwrap()
 }
 
 pub async fn verify_key(apikey: String) -> Result<&'static str, String> {
@@ -43,11 +43,11 @@ pub async fn verify_key(apikey: String) -> Result<&'static str, String> {
 
 pub async fn update_domain(
     apikey: String,
-    zoneid: &String,
-    name: &String,
-    domainid: &String,
-    r#type: &String,
-    newip: &String,
+    zoneid: &str,
+    name: &str,
+    domainid: &str,
+    r#type: &str,
+    newip: &str,
 ) {
     let patch = UpdateIp {
         r#type: r#type.to_owned(),
@@ -70,7 +70,7 @@ pub async fn update_domain(
             let json = a.json::<UpdateIpRespone>().await;
             match json {
                 Ok(k) => {
-                    if k.success == true {
+                    if k.success {
                         println!("updated domain: {}", k.result.name)
                     } else {
                         println!("failed to update domain: {}", k.result.name)
@@ -88,7 +88,7 @@ pub async fn update_domain(
 }
 
 // todo write domain ip update logic
-pub async fn update_zone(apikey: &String, zoneid: String) {
+pub async fn update_zone(apikey: &str, zoneid: String) {
     let client = client_builder().await;
     let ipreq = client
         .get("https://api64.ipify.org?format=json")
@@ -110,18 +110,16 @@ pub async fn update_zone(apikey: &String, zoneid: String) {
             match json {
                 Ok(a) => {
                     for domain in &a.result {
-                        if domain.r#type == "A" || domain.r#type == "AAAA" {
-                            if &domain.content != &ip {
-                                update_domain(
-                                    apikey.to_string(),
-                                    &zoneid,
-                                    &domain.name,
-                                    &domain.id,
-                                    &domain.r#type,
-                                    &ip,
-                                )
-                                .await;
-                            }
+                        if (domain.r#type == "A" || domain.r#type == "AAAA") && domain.content != ip {
+                            update_domain(
+                                apikey.to_string(),
+                                &zoneid,
+                                &domain.name,
+                                &domain.id,
+                                &domain.r#type,
+                                &ip,
+                            )
+                            .await;
                         } 
                     }
                 }
