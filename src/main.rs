@@ -4,7 +4,6 @@ use clap::{App, Arg};
 
 use std::fs::File;
 
-
 #[tokio::main]
 async fn main() {
     let matches = App::new("Cloudflareupdated")
@@ -37,7 +36,7 @@ async fn main() {
         }
     } else {
         for zone in settings.zones {
-            let _update = api::update_zone(&settings.apikey, zone.id).await;
+            let _update = api::update_zone(&settings.apikey, zone.id, zone.domains).await;
         }
     }
 }

@@ -1,0 +1,9 @@
+[unit]
+Description=A job to run cloudflareupdated
+
+[Service]
+Type=oneshot
+ExecStart=/home/<user>/cloudflareupdated/release/cloudflareupdated -f /home/<user>/cloudflareupdated/settings.yaml
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,6 @@
+apikey:  Your api key
+zones:
+  - name: nullrequest
+    id: your zone id
+    domains: 
+      - domains you want updated

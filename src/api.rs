@@ -88,7 +88,7 @@ pub async fn update_domain(
 }
 
 // todo write domain ip update logic
-pub async fn update_zone(apikey: &str, zoneid: String) {
+pub async fn update_zone(apikey: &str, zoneid: String, accepteddomain: Vec<String>) {
     let client = client_builder().await;
     let ipreq = client
         .get("https://api64.ipify.org?format=json")
@@ -110,7 +110,10 @@ pub async fn update_zone(apikey: &str, zoneid: String) {
             match json {
                 Ok(a) => {
                     for domain in &a.result {
-                        if (domain.r#type == "A" || domain.r#type == "AAAA") && domain.content != ip {
+                        if (domain.r#type == "A" || domain.r#type == "AAAA")
+                            && domain.content != ip
+                            && accepteddomain.contains(&domain.name.to_string())
+                        {
                             update_domain(
                                 apikey.to_string(),
                                 &zoneid,
@@ -120,7 +123,7 @@ pub async fn update_zone(apikey: &str, zoneid: String) {
                                 &ip,
                             )
                             .await;
-                        } 
+                        }
                     }
                 }
                 Err(e) => {
