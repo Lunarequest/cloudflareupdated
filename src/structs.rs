@@ -85,6 +85,7 @@ pub struct UpdateIp {
     pub name: String,
     pub content: String,
     pub ttl: u16,
+    pub proxied: bool,
 }
 #[derive(Debug, Deserialize)]
 pub struct UpdateIpRespone {

@@ -54,6 +54,7 @@ pub async fn update_domain(
         name: name.to_owned(),
         content: newip.to_owned(),
         ttl: 1,
+        proxied: true,
     };
     let client = client_builder().await;
     let req = client
