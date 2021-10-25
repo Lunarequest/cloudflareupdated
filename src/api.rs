@@ -58,7 +58,7 @@ pub async fn update_domain(
     let client = client_builder().await;
     let req = client
         .put(format!(
-            "{}/zones/{}/dns_records{}",
+            "{}/zones/{}/dns_records/{}",
             API_ENDPOINT, zoneid, domainid
         ))
         .header("Authorization", format!("Bearer {}", apikey))
@@ -67,7 +67,7 @@ pub async fn update_domain(
         .await;
     match req {
         Ok(a) => {
-            let json = a.json::<UpdateIpRespone>().await;
+            let json = &a.json::<UpdateIpRespone>().await;
             match json {
                 Ok(k) => {
                     if k.success {
@@ -114,6 +114,7 @@ pub async fn update_zone(apikey: &str, zoneid: String, accepteddomain: Vec<Strin
                             && domain.content != ip
                             && accepteddomain.contains(&domain.name.to_string())
                         {
+                            println!("{:#?}", domain);
                             update_domain(
                                 apikey.to_string(),
                                 &zoneid,
