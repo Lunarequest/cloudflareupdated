@@ -10,4 +10,4 @@ Some of the benefits include being faster then the python version and being able
 
 All of the code in this project is async and hence lends to faster speeds and all round better preformance. This project is intended to be used as a demon, you can see examples for a systemd timer in [configs](./configs)
 
-To configure the application a settings file is required. An example one is give in [configs](./configs/example-settings.yaml). By default cloudflareupdated assumes tje config file is at `./settings.yaml` to change this use the `-c`/`--config` arguments.
+To configure the application a settings file is required. An example one is give in [configs](./configs/example-settings.yaml). By default cloudflareupdated assumes the config file is at `./settings.yaml` to change this use the `-c`/`--config` arguments.
