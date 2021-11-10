@@ -8,7 +8,7 @@ const API_ENDPOINT: &str = "https://api.cloudflare.com/client/v4";
 #[derive(Debug)]
 pub struct Updated {
     pub domain: String,
-    pub status: bool
+    pub status: bool,
 }
 
 async fn client_builder() -> reqwest::Client {
@@ -97,7 +97,11 @@ pub async fn update_domain(
     }
 }
 
-pub async fn update_zone(apikey: &str, zoneid: String, accepteddomain: Vec<String>) -> Option<Vec<Updated>> {
+pub async fn update_zone(
+    apikey: &str,
+    zoneid: String,
+    accepteddomain: Vec<String>,
+) -> Option<Vec<Updated>> {
     let client = client_builder().await;
     let ipreq = client
         .get("https://api64.ipify.org?format=json")
@@ -132,16 +136,16 @@ pub async fn update_zone(apikey: &str, zoneid: String, accepteddomain: Vec<Strin
                                 &domain.id,
                                 &domain.r#type,
                                 &ip,
-                            ).await;
-                           let entery = Updated{
-                               domain: name.to_owned(),
-                               status: updated
-                           };
-                           updated_domains.push(entery)
+                            )
+                            .await;
+                            let entery = Updated {
+                                domain: name.to_owned(),
+                                status: updated,
+                            };
+                            updated_domains.push(entery)
                         }
                     }
                     Some(updated_domains)
-
                 }
                 Err(e) => {
                     println!("there way an error,the following error occured:\n{}", e);

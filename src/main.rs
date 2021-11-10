@@ -39,8 +39,10 @@ async fn main() {
         for zone in settings.zones {
             let update = api::update_zone(&settings.apikey, zone.id, zone.domains).await;
             match update {
-                Some(e) => {println!("{:#?}",e)},
-                None => return, 
+                Some(e) => {
+                    println!("{:#?}", e)
+                }
+                None => return,
             }
         }
     }
