@@ -5,6 +5,12 @@ use reqwest::header;
 
 const API_ENDPOINT: &str = "https://api.cloudflare.com/client/v4";
 
+#[derive(Debug)]
+pub struct Updated {
+    pub domain: String,
+    pub status: bool
+}
+
 async fn client_builder() -> reqwest::Client {
     let mut headers = header::HeaderMap::new();
     headers.insert(
@@ -47,7 +53,7 @@ pub async fn update_domain(
     domainid: &str,
     r#type: &str,
     newip: &str,
-) {
+) -> bool {
     let patch = UpdateIp {
         r#type: r#type.to_owned(),
         name: name.to_owned(),
@@ -71,23 +77,27 @@ pub async fn update_domain(
             match json {
                 Ok(k) => {
                     if k.success {
-                        println!("updated domain: {}", k.result.name)
+                        println!("updated domain: {}", k.result.name);
+                        true
                     } else {
-                        println!("failed to update domain: {}", k.result.name)
+                        println!("failed to update domain: {}", k.result.name);
+                        false
                     }
                 }
                 Err(e) => {
-                    println!("failed to convert response to json error: {}", e)
+                    println!("failed to convert response to json error: {}", e);
+                    false
                 }
             }
         }
         Err(e) => {
-            println!("failed to update domain {}, got {}", name, e)
+            println!("failed to update domain {}, got {}", name, e);
+            false
         }
     }
 }
 
-pub async fn update_zone(apikey: &str, zoneid: String, accepteddomain: Vec<String>) {
+pub async fn update_zone(apikey: &str, zoneid: String, accepteddomain: Vec<String>) -> Option<Vec<Updated>> {
     let client = client_builder().await;
     let ipreq = client
         .get("https://api64.ipify.org?format=json")
@@ -103,6 +113,7 @@ pub async fn update_zone(apikey: &str, zoneid: String, accepteddomain: Vec<Strin
         .header("Authorization", format!("Bearer {}", apikey))
         .send()
         .await;
+    let mut updated_domains: Vec<Updated> = vec![];
     match req {
         Ok(req) => {
             let json = &req.json::<ZoneListResponse>().await;
@@ -113,26 +124,34 @@ pub async fn update_zone(apikey: &str, zoneid: String, accepteddomain: Vec<Strin
                             && domain.content != ip
                             && accepteddomain.contains(&domain.name.to_string())
                         {
-                            println!("{:#?}", domain);
-                            update_domain(
+                            let name = &domain.name;
+                            let updated = update_domain(
                                 apikey.to_string(),
                                 &zoneid,
-                                &domain.name,
+                                name,
                                 &domain.id,
                                 &domain.r#type,
                                 &ip,
-                            )
-                            .await;
+                            ).await;
+                           let entery = Updated{
+                               domain: name.to_owned(),
+                               status: updated
+                           };
+                           updated_domains.push(entery)
                         }
                     }
+                    Some(updated_domains)
+
                 }
                 Err(e) => {
-                    println!("there way an error,the following error occured:\n{}", e)
+                    println!("there way an error,the following error occured:\n{}", e);
+                    None
                 }
             }
         }
         Err(req) => {
-            println!("there way an error, the following error:\n{}", req)
+            println!("there way an error, the following error:\n{}", req);
+            None
         }
     }
 }

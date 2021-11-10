@@ -37,7 +37,11 @@ async fn main() {
         }
     } else {
         for zone in settings.zones {
-            let _update = api::update_zone(&settings.apikey, zone.id, zone.domains).await;
+            let update = api::update_zone(&settings.apikey, zone.id, zone.domains).await;
+            match update {
+                Some(e) => {println!("{:#?}",e)},
+                None => return, 
+            }
         }
     }
 }
