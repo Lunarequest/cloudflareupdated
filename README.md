@@ -9,3 +9,5 @@ The python script ran into many issues and was close to unmaintaibale, This vers
 All of the code in this project is async and hence lends to faster speeds and all round better performance. This project is intended to be used as a demon, you can see examples for a systemd timer in [configs](./configs)
 
 To configure the application a settings file is required. An example one is give in [configs](./configs/example-settings.yaml). By default cloudflareupdated assumes the config file is at `./settings.yaml` to change this use the `-c`/`--config` arguments.
+
+Optionally there is experimental support for sending emails when a domain is updated. 

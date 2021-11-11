@@ -1,4 +1,5 @@
 mod api;
+mod mailer;
 mod responses;
 mod structs;
 use clap::{App, Arg};
@@ -39,9 +40,23 @@ async fn main() {
         for zone in settings.zones {
             let update = api::update_zone(&settings.apikey, zone.id, zone.domains).await;
             match update {
-                Some(e) => {
-                    println!("{:#?}", e)
-                }
+                Some(updated_domains) => match &settings.stmp_creds {
+                    Some(creds) => {
+                        // the clones are a hack to circumvent issues with borrowing
+                        match mailer::sendmail(
+                            creds.username.clone(),
+                            creds.password.clone(),
+                            creds.stmpserver.clone(),
+                            updated_domains,
+                        )
+                        .await
+                        {
+                            Ok(_) => return,
+                            Err(e) => panic!("{}", e),
+                        }
+                    }
+                    None => return,
+                },
                 None => return,
             }
         }

@@ -8,9 +8,17 @@ pub struct Zone {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+pub struct Smtp {
+    pub username: String,
+    pub password: String,
+    pub stmpserver: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Settings {
     pub apikey: String,
     pub zones: Vec<Zone>,
+    pub stmp_creds: Option<Smtp>,
 }
 
 #[derive(Debug, Serialize)]
