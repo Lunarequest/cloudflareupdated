@@ -4,3 +4,8 @@ zones:
     id: your zone id
     domains: 
       - domains you want updated
+# optional
+stmp_creds:
+  username: YOUR USERNAME FOR EMAIL
+  password: FOR GMAIL A APP PASSWORD IS RECOMENED 
+  stmpserver: YOUR SMTP SERVER eg: smtp.gmail.com

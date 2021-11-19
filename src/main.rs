@@ -42,17 +42,19 @@ async fn main() {
             match update {
                 Some(updated_domains) => match &settings.stmp_creds {
                     Some(creds) => {
-                        // the clones are a hack to circumvent issues with borrowing
-                        match mailer::sendmail(
-                            creds.username.clone(),
-                            creds.password.clone(),
-                            creds.stmpserver.clone(),
-                            updated_domains,
-                        )
-                        .await
-                        {
-                            Ok(_) => return,
-                            Err(e) => panic!("{}", e),
+                        if !updated_domains.is_empty() {
+                            // the clones are a hack to circumvent issues with borrowing
+                            match mailer::sendmail(
+                                creds.username.clone(),
+                                creds.password.clone(),
+                                creds.stmpserver.clone(),
+                                updated_domains,
+                            )
+                            .await
+                            {
+                                Ok(_) => return,
+                                Err(e) => panic!("{}", e),
+                            }
                         }
                     }
                     None => return,
