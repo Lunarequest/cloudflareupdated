@@ -44,7 +44,6 @@ async fn main() {
                     Some(creds) => {
                         if !updated_domains.is_empty() {
                             // the clones are a hack to circumvent issues with borrowing
-                            println!("{:#?}", updated_domains);
                             match mailer::sendmail(
                                 creds.username.clone(),
                                 creds.password.clone(),
