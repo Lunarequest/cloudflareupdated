@@ -1,4 +1,3 @@
-{ pkgs ? import <nixpkgs> {} }:
 (import
   (
     let
@@ -11,4 +10,5 @@
   )
   {
     src = ./.;
-  }).shellNix
+  }
+).defaultNix

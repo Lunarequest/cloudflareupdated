@@ -21,6 +21,7 @@ pub struct VerifcationResult {
     pub status: String,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 pub struct ResultInfo {
     page: u16,
@@ -29,7 +30,7 @@ pub struct ResultInfo {
     total_count: u16,
     total_pages: u16,
 }
-
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 pub struct MetaInfo {
     auto_added: bool,
@@ -37,7 +38,7 @@ pub struct MetaInfo {
     managed_by_argo_tunnel: Option<bool>,
     source: String,
 }
-
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 pub struct Domain {
     pub id: String,
@@ -54,7 +55,7 @@ pub struct Domain {
     pub created_on: String,
     pub modified_on: String,
 }
-
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 pub struct ZoneListResponse {
     pub result: Vec<Domain>,
@@ -63,11 +64,12 @@ pub struct ZoneListResponse {
     pub messages: Vec<Messages>,
     pub result_info: ResultInfo,
 }
-
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 pub struct IpifyResponse {
     pub ip: String,
 }
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 pub struct UpdateIpRespone {
     pub success: bool,
