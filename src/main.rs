@@ -2,26 +2,26 @@ mod api;
 mod mailer;
 mod responses;
 mod structs;
-use clap::{App, Arg};
+use clap::{Command, Arg};
 
 use std::fs::File;
 
 #[tokio::main]
 async fn main() {
-    let matches = App::new("Cloudflareupdated")
+    let matches = Command::new("Cloudflareupdated")
         .version("0.1.0")
         .author("Luna D Dragon")
         .about("Update your public ip for cloudflare automatically")
         .arg(
-            Arg::with_name("config")
-                .short("c")
+            Arg::new("config")
+                .short('c')
                 .long("config")
                 .value_name("SETTINGS_FILE")
                 .help("Path to config file if it is not in the current directory")
                 .takes_value(true),
         )
         .arg(
-            Arg::with_name("verify")
+            Arg::new("verify")
                 .long("verify")
                 .help("check if api key works")
                 .takes_value(false),

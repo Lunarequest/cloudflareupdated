@@ -83,6 +83,9 @@
             {
               inherit buildInputs nativeBuildInputs;
               RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
+              shellHook = ''
+                test -f ~/.zshrc && exec zsh
+              '';
             } // buildEnvVars;
         }
       );
