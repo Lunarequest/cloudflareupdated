@@ -39,9 +39,7 @@ pub async fn verify_key(apikey: String) -> Result<&'static str, String> {
     if req.result.status == "active" {
         Ok("Key is active")
     } else {
-        Err(format!(
-            "Key is not working, please check if it has expired"
-        ))
+        Err("Key is not working, please check if it has expired".to_string())
     }
 }
 
