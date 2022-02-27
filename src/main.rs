@@ -2,7 +2,7 @@ mod api;
 mod mailer;
 mod responses;
 mod structs;
-use clap::{Command, Arg};
+use clap::{Arg, Command};
 
 use std::fs::File;
 
