@@ -10,13 +10,14 @@
       url = "github:kolloch/crate2nix";
       flake = false;
     };
+    flake-compat-ci.url = "github:hercules-ci/flake-compat-ci";
     flake-compat = {
       url = "github:edolstra/flake-compat";
       flake = false;
     };
   };
 
-  outputs = { self, nixpkgs, utils, rust-overlay, crate2nix, ... }:
+  outputs = { self, nixpkgs, utils, rust-overlay, crate2nix, flake-compat-ci, ... }:
     let
       name = "cloudflareupdated";
     in
@@ -87,6 +88,9 @@
                 test -f ~/.zshrc && exec zsh
               '';
             } // buildEnvVars;
+         ciNix = flake-compat-ci.lib.recurseIntoFlakeWith {
+            flake = self;
+            };
         }
       );
 }
