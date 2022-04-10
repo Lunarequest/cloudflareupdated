@@ -1,51 +1,86 @@
+
 {
   description = "cloudflareupdated packaging and development stuff";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     utils.url = "github:numtide/flake-utils";
-    naersk.url = "github:nix-community/naersk";
-    flake-compat-ci.url = "github:hercules-ci/flake-compat-ci";
     rust-overlay.url = "github:oxalica/rust-overlay";
+    crate2nix = {
+      url = "github:kolloch/crate2nix";
+      flake = false;
+    };
+    flake-compat-ci.url = "github:hercules-ci/flake-compat-ci";
     flake-compat = {
       url = "github:edolstra/flake-compat";
       flake = false;
     };
   };
 
-  outputs = { self, nixpkgs, flake-compat-ci, flake-compat, utils, naersk, rust-overlay }:
-    utils.lib.eachDefaultSystem (system:
-      let
-        pkgs = nixpkgs.legacyPackages."${system}";
-        rust = rust-overlay.latest.rustChannels.stable.rust; 
-        naersk-lib = naersk.lib."${system}";
-        buildEnvVars = {
-          PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
-        };
-      in rec {
-        # `nix build`
-        packages.cloudflareupdated = naersk-lib.buildPackage {
-          pname = "cloudflareupdated";
-          root = ./.;
-          buildInputs = with pkgs; [ openssl pkgconfig ];
-        } // buildEnvVars;
-        defaultPackage = packages.cloudflareupdated;
+  outputs = { self, nixpkgs, utils, rust-overlay, crate2nix, flake-compat-ci, ... }:
+    let
+      name = "cloudflareupdated";
+    in
+    utils.lib.eachDefaultSystem
+      (system:
+        let
+          # Imports
+          pkgs = import nixpkgs {
+            inherit system; 
+          };
+          inherit (import "${crate2nix}/tools.nix" { inherit pkgs; })
+            generatedCargoNix;
 
-        # `nix run`
-        apps.cloudflareupdated =
-          utils.lib.mkApp { drv = packages.cloudflareupdated; };
-        defaultApp = apps.cloudflareupdated;
+          # Create the cargo2nix project
+          project = pkgs.callPackage
+            (generatedCargoNix {
+              inherit name;
+              src = ./.;
+            })
+            {
+              # Individual crate overrides go here
+              # Example: https://github.com/balsoft/simple-osd-daemons/blob/6f85144934c0c1382c7a4d3a2bbb80106776e270/flake.nix#L28-L50
+              defaultCrateOverrides = pkgs.defaultCrateOverrides // {
+                # The app crate itself is overriden here. Typically we
+                # configure non-Rust dependencies (see below) here.
+                ${name} = oldAttrs: {
+                  inherit buildInputs nativeBuildInputs;
+                } // buildEnvVars;
+              };
+            };
 
-        # `nix develop`
-        devShell = pkgs.mkShell {
-          nativeBuildInputs = with pkgs; [ rustc cargo zsh ];
-          shellHook = ''
-            test -f ~/.zshrc && exec zsh
-          '';
-        };
+          # Configuration for the non-Rust dependencies
+          buildInputs = with pkgs; [ openssl.dev ];
+          nativeBuildInputs = with pkgs; [ rustc cargo pkgconfig nixpkgs-fmt ];
+          buildEnvVars = {
+            PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
+          };
+        in
+        rec {
+          packages.${name} = project.rootCrate.build;
 
-        ciNix = flake-compat-ci.lib.recurseIntoFlakeWith { flake = self; };
+          # `nix build`
+          defaultPackage = packages.${name};
 
-      });
+          # `nix run`
+          apps.${name} = utils.lib.mkApp {
+            inherit name;
+            drv = packages.${name};
+          };
+          defaultApp = apps.${name};
+
+          # `nix develop`
+          devShell = pkgs.mkShell
+            {
+              inherit buildInputs nativeBuildInputs;
+              RUST_SRC_PATH = "${pkgs.rust.packages.stable.rustPlatform.rustLibSrc}";
+              shellHook = ''
+                test -f ~/.zshrc && exec zsh
+              '';
+            } // buildEnvVars;
+         ciNix = flake-compat-ci.lib.recurseIntoFlakeWith {
+            flake = self;
+            };
+        }
+      );
 }
-
