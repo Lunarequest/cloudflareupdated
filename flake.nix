@@ -9,7 +9,8 @@
     };
   };
 
-  outputs = { self, nixpkgs, flake-utils,flake-compat, flake-compat-ci, naersk }:
+  outputs =
+    { self, nixpkgs, flake-utils, flake-compat, flake-compat-ci, naersk }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages."${system}";
@@ -27,7 +28,7 @@
         defaultPackage = packages.cloudflareupdated;
 
         # `nix run`
-        apps.hello-world =
+        apps.coudflareupdated =
           flake-utils.lib.mkApp { drv = packages.cloudflareupdated; };
         defaultApp = apps.coudflareupdated;
 
