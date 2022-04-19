@@ -11,7 +11,7 @@
 
   outputs =
     { self, nixpkgs, flake-utils, flake-compat, flake-compat-ci, naersk }:
-    flake-utils.lib.eachSystem with flake-utils.lib; [ flake-utils.lib.system.x86_64-linux flake-utils.lib.system.i686-linux ] (system:
+    flake-utils.lib.eachSystem [ flake-utils.lib.system.x86_64-linux flake-utils.lib.system.i686-linux ] (system:
       let
         pkgs = nixpkgs.legacyPackages."${system}";
         naersk-lib = naersk.lib."${system}";
