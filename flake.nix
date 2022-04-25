@@ -11,11 +11,8 @@
 
   outputs =
     { self, nixpkgs, flake-utils, flake-compat, flake-compat-ci, naersk }:
-    flake-utils.lib.eachSystem [
-      flake-utils.lib.system.x86_64-linux
-      flake-utils.lib.system.i686-linux
-      flake-utils.lib.system.aarch64-linux
-    ] (system:
+    flake-utils.lib.eachSystem [ "x86_64-linux" "i686-linux" "aarch64-linux" ]
+    (system:
       let
         pkgs = nixpkgs.legacyPackages."${system}";
         naersk-lib = naersk.lib."${system}";
@@ -27,14 +24,15 @@
         packages.cloudflareupdated = naersk-lib.buildPackage {
           pname = "cloudflareupdated";
           root = ./.;
-          nativeBuildInputs = [ pkgs.pkgconfig pkgs.openssl ];
+          nativeBuildInputs = with pkgs; [ pkgconfig openssl ];
         };
         defaultPackage = packages.cloudflareupdated;
 
-        # `nix run`
-        apps.coudflareupdated =
-          flake-utils.lib.mkApp { drv = packages.cloudflareupdated; };
-        defaultApp = apps.coudflareupdated;
+        apps.cloudflareupdated = flake-utils.lib.mkApp {
+            drv = packages.cloudflareupdated;
+        };
+
+        defaultApp = apps.cloudflareupdated;
 
         # `nix develop`
         devShell = pkgs.mkShell {
