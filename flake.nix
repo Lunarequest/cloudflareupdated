@@ -39,7 +39,7 @@
       apps = genSystems (system: {
         ${system}.defaultApp = {
           type = "app";
-          programs = self.packages.cloudflareupdated;
+          programs = self.packages.${system}.system.cloudflareupdated;
         };
       });
 
