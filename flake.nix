@@ -35,11 +35,11 @@
             '';
           } // buildEnvVars pkgsFor.${system});
       });
-
-      defaultApp = {
-        type = "app";
-        programs = self.packages.cloudflareupdated;
+      apps.cloudflareupdated = {
+            type = "app";
+            program = self.packages.cloudflareupdated;
       };
+      defaultApp = self.apps.cloudflareupdated;
 
       ciNix = flake-compat-ci.lib.recurseIntoFlakeWith { flake = self; };
     };
