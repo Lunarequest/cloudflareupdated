@@ -37,6 +37,6 @@
       });
 
       ciNix = genSystems
-        (system: (flake-compat-ci.lib.recurseIntoFlakeWith { flake = self; }));
+        (system: flake-compat-ci.lib.recurseIntoFlakeWith { flake = self; });
     };
 }
