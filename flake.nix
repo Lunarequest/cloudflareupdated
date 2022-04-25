@@ -36,6 +36,13 @@
           } // buildEnvVars pkgsFor.${system});
       });
 
+      apps = genSystems (system: {
+        ${system}.defaultApp = {
+          type = "app";
+          programs = self.packages.cloudflareupdated;
+        };
+      });
+
       ciNix = flake-compat-ci.lib.recurseIntoFlakeWith { flake = self; };
     };
 }
