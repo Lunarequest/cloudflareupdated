@@ -36,7 +36,6 @@
           } // buildEnvVars pkgsFor.${system});
       });
 
-      ciNix = genSystems
-        (system: flake-compat-ci.lib.recurseIntoFlakeWith { flake = self; });
+      ciNix = flake-compat-ci.lib.recurseIntoFlakeWith { flake = self; };
     };
 }
