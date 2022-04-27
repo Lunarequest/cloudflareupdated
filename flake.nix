@@ -1,6 +1,9 @@
 {
   inputs = {
-    naersk.url = "github:nix-community/naersk";
+    naersk = {
+        url = "github:nix-community/naersk";
+        inputs.nixpkgs.follows = "nixpkgs";
+    };
     flake-compat-ci.url = "github:hercules-ci/flake-compat-ci";
     flake-compat = {
       url = "github:edolstra/flake-compat";
