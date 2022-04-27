@@ -29,7 +29,7 @@
       devShells = genSystems (system: {
         default = with pkgsFor.${system};
           mkShell ({
-            packages = [ rustc cargo openssl pkgconfig ];
+            packages = [ zsh rustc cargo openssl pkgconfig ];
             shellHook = ''
               test -f ~/.zshrc && exec zsh
             '';
