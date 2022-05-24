@@ -2,8 +2,8 @@ mod api;
 mod mailer;
 mod responses;
 mod structs;
-use clap::{Arg, Command};
 use api::load_config;
+use clap::{Arg, Command};
 use std::fs;
 
 #[tokio::main]
