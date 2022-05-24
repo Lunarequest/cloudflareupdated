@@ -3,8 +3,8 @@ mod mailer;
 mod responses;
 mod structs;
 use clap::{Arg, Command};
-
-use std::fs::File;
+use api::load_config;
+use std::fs;
 
 #[tokio::main]
 async fn main() {
@@ -28,8 +28,13 @@ async fn main() {
 		)
 		.get_matches();
 	let config = matches.value_of("config").unwrap_or("./settings.yaml");
-	let f = File::open(config).expect("Could not open settings file.");
-	let settings: structs::Settings = serde_yaml::from_reader(f).expect("Could not read values.");
+	let f = fs::read_to_string(config).expect("Could not open settings file.");
+	let settings: structs::Settings = match load_config(f).await {
+		Ok(settings) => settings,
+		Err(_) => {
+			panic!("Attempted to read file as Yaml & Json. Unable to seriales to settings, Please ensure everything is formated correctly")
+		}
+	};
 	if matches.is_present("verify") {
 		let verify = api::verify_key(settings.apikey).await;
 		match verify {
