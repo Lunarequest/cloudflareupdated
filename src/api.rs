@@ -2,8 +2,8 @@ use super::responses::{IpifyResponse, UpdateIpRespone, VerifcationResponse, Zone
 use super::structs::UpdateIp;
 use reqwest::header;
 use super::structs::Settings;
-use serde_yaml;
-use serde_json;
+
+
 
 const API_ENDPOINT: &str = "https://api.cloudflare.com/client/v4";
 
@@ -28,7 +28,7 @@ async fn client_builder() -> reqwest::Client {
 
 pub async fn load_config(f: String) -> Result<Settings,()>{
 	match serde_yaml::from_str::<Settings>(f.as_str()) {
-		Ok(settings) => {return Ok(settings)},
+		Ok(settings) => Ok(settings),
 		Err(ey) => {
 			match serde_json::from_str::<Settings>(f.as_str()) {
 				Ok(settings) => Ok(settings),
